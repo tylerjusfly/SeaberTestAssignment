@@ -1,0 +1,45 @@
+MY solution :
+receive the post request from external endpoint , sanitize the data and save to database using the ext-orderid of each request as its INDEX to save to database.
+once the data expected are complete, make a request to seaber api with requested data and save order.
+
+get back a res.created/ok to mark a specific row sent as true to avoid sending multiple request to seaber API.
+
+How stable is this solution?
+I prefer this solution because I was actually thinking of having a few different table for Cargo, Source, Destination. but having different table for each type would slow the system because that way I have to send a query to check each table, if the order id exists there and then send another query to get the data.
+
+1. What if messages from the External System came in a different order?
+   It doesn't matter in which order it comes , it stores in any other as long as they come with an ID
+
+2. What if messages from the External System are duplicated?
+   it only saves the first request of that type from the External System, all other duplicate are discarded.
+
+3. What if messages from the External System for the same order came in 1 day between each other?
+   The messages will be kept in the database , no matter how many days interval , it waits until the tables are complete before extracting them and send to seaber API.
+   but meanwhile my solution deletes any data that is more than a week if not completed.
+
+4. What if a message of any type never comes so the Integration Layer is not able to construct Seaber order?
+   once the data is created or updated the update_at column of the row keeps track of time ,
+   Any message that is not complete in the database deletes when its a week or 5 days.
+
+5. What if the Seaber API goes down?
+   so my thought is implementing a messaging queue (rabbitMQ, Kafka) between the integration code and Seaber API,
+   So that way the integration code is sending to the messaging queue and Seaber API is fetching the data from the queue, so if Seaber API was offline , the messages will be stored in the queue and when Seaber API is back up, it can fetch the JSON data from the queue.
+
+6. How easy will it be to update the code if the External System decides to change JSON to XML?
+
+{
+"extOrderId": "bda73cd4-30a0-40e5-bd0b-2bc3c907be47",
+"type": "cargo",
+"cargoType": "Pasta",
+"cargoAmount": 100
+},
+{
+"extOrderId": "bda73cd4-30a0-40e5-bd0b-2bc3c907be47",
+"type": "to",
+"toLocation": "Kokkola"
+},
+{
+"extOrderId" : "bda73cd4-30a0-40e5-bd0b-2bc3c907be47",
+"type": "from",
+"fromLocation": "Porvoo"
+}
