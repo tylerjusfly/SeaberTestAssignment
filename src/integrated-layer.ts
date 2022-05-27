@@ -22,10 +22,11 @@ export const integrate = async (req: Request, res: Response, next: NextFunction)
         jsonData.cargoAmount,
       ]);
     }
-    // Stopped here
+
     if (uid.rowCount === 0 && jsonData.type == "to") {
       await pool.query("INSERT INTO orders(orderid, toLocation )VALUES($1, $2)", [jsonData.extOrderId, jsonData.toLocation]);
     }
+
     if (uid.rowCount === 0 && jsonData.type == "from") {
       await pool.query("INSERT INTO orders(orderid, fromLocation )VALUES($1, $2)", [jsonData.extOrderId, jsonData.fromLocation]);
     }
@@ -38,6 +39,7 @@ export const integrate = async (req: Request, res: Response, next: NextFunction)
         jsonData.extOrderId,
       ]);
     }
+
     if (uid.rowCount == 1 && jsonData.type == "from") {
       await pool.query("UPDATE orders SET fromLocation = $1, updated_at = $2 WHERE orderid = $3 AND fromLocation IS NULL", [
         jsonData.fromLocation,
@@ -45,12 +47,14 @@ export const integrate = async (req: Request, res: Response, next: NextFunction)
         jsonData.extOrderId,
       ]);
     }
+
     if (uid.rowCount == 1 && jsonData.type == "cargo") {
       await pool.query(
         "UPDATE orders SET cargoType = $1, cargoAmount = $2, updated_at = $3 WHERE orderid = $4 AND (cargoType, cargoAmount) IS NULL",
         [jsonData.cargoType, jsonData.cargoAmount, "Now()", jsonData.extOrderId],
       );
     }
+
     // Getting updated/saved data to display
     const savedResult = await pool.query("SELECT * FROM orders WHERE orderid = $1", [jsonData.extOrderId]);
 
