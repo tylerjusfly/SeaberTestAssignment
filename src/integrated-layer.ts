@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import axios from "axios";
-import { pool } from "./database";
+import { pool, checkTable } from "./database";
 import { IncomingPackets } from "./types";
 import { QueryResult } from "pg";
 
@@ -55,10 +54,15 @@ export const integrate = async (req: Request, res: Response, next: NextFunction)
       );
     }
 
+    // checking if table is complete
+    checkTable(false, jsonData.extOrderId);
+
     // Getting updated/saved data to display
     const savedResult = await pool.query("SELECT * FROM orders WHERE orderid = $1", [jsonData.extOrderId]);
 
     return res.status(200).json(savedResult.rows);
+
+    // Returning all fields if complete
   } catch (error) {
     next(error);
   }

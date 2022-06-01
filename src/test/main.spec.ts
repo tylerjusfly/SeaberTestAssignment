@@ -87,7 +87,7 @@ test("Inserting Into column tolocation of NUll where rowcount Equals 1 and order
   expect(response.body[0].tolocation).toBe("Russia");
 });
 
-test("Inserting into column with cargoType of Null when  when Row Count Equals 0 and OrderId exists", async () => {
+test("Inserting into column with cargoType of Null when Row Count Equals 1 and OrderId exists", async () => {
   const data: IncomingPackets = {
     extOrderId: "bda73cd4-0e5-bd0b-2bc3c907be47",
     type: "cargo",
