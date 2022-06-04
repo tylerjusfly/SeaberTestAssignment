@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, Connection } from "pg";
 import * as cron from "node-cron";
 import dotenv from "dotenv";
 import axios from "axios";
@@ -14,6 +14,18 @@ export const pool = new Pool({
   //   rejectUnauthorized: false,
   // },
 });
+
+export function makeMockDb<TResult>(results: TResult): Pool {
+  const db = {} as Pool;
+
+  function query(sql: string, values?: unknown[]) {
+    return [results, []];
+  }
+  // @ts-ignore
+  db.query = query;
+
+  return db;
+}
 
 export const deleteRecords = async () => {
   const allTablesDate = await pool.query("DELETE FROM orders WHERE updated_at <= NOW() - INTERVAL '5 day'");

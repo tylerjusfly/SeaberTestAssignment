@@ -3,9 +3,6 @@ import { Server } from "http";
 import createError from "http-errors";
 import { integrate } from "./integrated-layer";
 import { seaberApi, getAllOrders } from "./seaberApi";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
