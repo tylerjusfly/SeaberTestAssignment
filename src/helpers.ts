@@ -3,7 +3,7 @@ import axios from "axios";
 import * as cron from "node-cron";
 
 export const deleteRecords = async () => {
-  const allTablesDate = await pool.query("DELETE FROM orders WHERE updated_at <= NOW() - INTERVAL '5 day'");
+  await pool.query("DELETE FROM orders WHERE updated_at <= NOW() - INTERVAL '5 day'");
 
   console.log("......Deleted all records that is 5 days and above ");
 };

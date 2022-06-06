@@ -11,7 +11,7 @@ export const seaberApi = async (req: Request, res: Response, next: NextFunction)
   }
 
   try {
-    const newOrder = await pool.query(
+    await pool.query(
       "INSERT INTO seaberorder(orderid, tolocation, fromlocation, cargotype, cargoamount)VALUES($1, $2, $3, $4, $5)",
 
       [orderid, tolocation, fromlocation, cargotype, cargoamount],
@@ -22,7 +22,7 @@ export const seaberApi = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllOrders = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const allOrders = await pool.query("SELECT * FROM seaberorder");
     return res.json(allOrders.rows);
