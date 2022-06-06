@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../server";
 import { IncomingPackets } from "../types";
+import { checkTable } from "../helpers";
 
 test("should return status 200 and Hello World", async () => {
   const result = await request(app).get("/").send();
@@ -100,4 +101,11 @@ test("Inserting into column with cargoType of Null when Row Count Equals 1 and O
   expect(response.body[0].cargotype).toBe("FigTrees");
   expect(response.body[0].tolocation).toBe("Kokkola");
   expect(response.body[0].fromlocation).toBeNull;
+});
+
+test("check database table", async () => {
+  let checkTableResult = checkTable(false, "");
+
+  expect(checkTable).toBeDefined;
+  expect(checkTableResult).toReturn();
 });

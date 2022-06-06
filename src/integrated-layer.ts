@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { pool, checkTable } from "./database";
+import { pool } from "./database";
 import { IncomingPackets } from "./types";
+import { checkTable } from "./helpers";
 import { QueryResult } from "pg";
 
 export const integrate = async (req: Request, res: Response, next: NextFunction) => {
