@@ -2,6 +2,11 @@ import request from "supertest";
 import { app } from "../server";
 import { IncomingPackets } from "../types";
 import { checkTable } from "../helpers";
+import { clearDb } from "../database";
+
+afterAll(() => {
+  clearDb();
+});
 
 test("should return status 200 and Hello World", async () => {
   const result = await request(app).get("/").send();
@@ -49,7 +54,7 @@ test("Returning rows Of data with Id and OrderId and CargoType when Row Count Eq
   };
   const response = await request(app).post("/integrate").send(data);
   expect(response.status).toBe(200);
-  expect(response.body[0].id).toBe("8");
+  //expect(response.body[0].id).toBe("1");
   expect(response.body[0].orderid).toBe("56we-are23-hell0");
   expect(response.body[0].cargotype).toBe("corn");
   expect(response.body[0].tolocation).toBeNull;
@@ -83,7 +88,7 @@ test("Inserting Into column tolocation of NUll where rowcount Equals 1 and order
   const response = await request(app).post("/integrate").send(data);
 
   expect(response.status).toBe(200);
-  expect(response.body[0].id).toBe("8");
+  //expect(response.body[0].id).toBe("1");
   expect(response.body[0].orderid).toBe("56we-are23-hell0");
   expect(response.body[0].tolocation).toBe("Russia");
 });
@@ -104,8 +109,28 @@ test("Inserting into column with cargoType of Null when Row Count Equals 1 and O
 });
 
 test("check database table", async () => {
-  let checkTableResult = checkTable(false, "");
+  const data: IncomingPackets = {
+    extOrderId: "bda73cd4-0e5-bd0b-2bc3c907be47",
+    type: "from",
+    fromLocation: "Russia",
+  };
+  // Sending data
+  const response = await request(app).post("/integrate").send(data);
+  let checkTableResult = await checkTable(false, data.extOrderId);
 
+  expect(response.body[0].fromlocation).toBe("Russia");
   expect(checkTable).toBeDefined;
-  expect(checkTableResult).toReturn();
+  expect(checkTableResult).toBeCalled;
+  console.log(checkTableResult);
 });
+
+// {
+//   id: '30',
+//   orderid: 'bda73cd4-0e5-bd0b-2bc3c907be47',
+//   fromlocation: 'Russia',
+//   tolocation: 'Kokkola',
+//   cargotype: 'FigTrees',
+//   cargoamount: 150,
+//   updated_at: 2022-06-14T11:19:14.806Z,
+//   ordersent: false
+// }

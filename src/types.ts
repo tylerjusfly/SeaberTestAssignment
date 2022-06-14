@@ -15,7 +15,7 @@ export interface IOrder {
   tolocation: String;
   cargotype: String;
   cargoamount: Number;
-  update_time: Date;
+  updated_at: Date;
   ordersent: Boolean;
 }
 

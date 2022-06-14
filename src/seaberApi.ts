@@ -3,23 +3,21 @@ import { pool } from "./database";
 import { IOrder } from "./types";
 
 export const seaberApi = async (req: Request, res: Response, next: NextFunction) => {
-  const { orderid, tolocation, fromlocation, cargotype, cargoamount }: IOrder = req.body.data;
-
-  if (!orderid || !tolocation || !fromlocation || !cargotype || !cargoamount) {
-    console.log({ message: "missing Fields" });
-    res.status(400).json({ message: "missing Fields" });
-  }
-
-  try {
-    await pool.query(
-      "INSERT INTO seaberorder(orderid, tolocation, fromlocation, cargotype, cargoamount)VALUES($1, $2, $3, $4, $5)",
-
-      [orderid, tolocation, fromlocation, cargotype, cargoamount],
-    );
-    res.status(201).json(orderid);
-  } catch (error) {
-    next(error);
-  }
+  // const { orderid, tolocation, fromlocation, cargotype, cargoamount }: IOrder = req.body.data;
+  // if (!orderid || !tolocation || !fromlocation || !cargotype || !cargoamount) {
+  //   console.log({ message: "missing Fields" });
+  //   res.status(400).json({ message: "missing Fields" });
+  // }
+  // try {
+  //   await pool.query(
+  //     "INSERT INTO seaberorder(orderid, tolocation, fromlocation, cargotype, cargoamount)VALUES($1, $2, $3, $4, $5)",
+  //     [orderid, tolocation, fromlocation, cargotype, cargoamount],
+  //   );
+  //   res.status(201).json(orderid);
+  // } catch (error) {
+  //   next(error);
+  // }
+  console.log(req.body.data);
 };
 
 export const getAllOrders = async (_req: Request, res: Response, next: NextFunction) => {
